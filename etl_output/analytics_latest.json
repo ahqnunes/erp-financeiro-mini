@@ -1,0 +1,236 @@
+{
+  "kpis": {
+    "saldo_caixa_atual": 36471.2,
+    "receita_bruta": 23400.0,
+    "despesas_operacionais": 11750.8,
+    "lucro_liquido": 11471.2,
+    "margem_liquida_percentual": 49.4
+  },
+  "fluxo_caixa_30d": [
+    {
+      "data": "2026-09-22",
+      "dia": "22/09",
+      "entradas_previstas": 3800.0,
+      "saidas_previstas": 1250.0,
+      "saldo_projetado": 39021.2
+    },
+    {
+      "data": "2026-09-23",
+      "dia": "23/09",
+      "entradas_previstas": 0.0,
+      "saidas_previstas": 0.0,
+      "saldo_projetado": 39021.2
+    },
+    {
+      "data": "2026-09-24",
+      "dia": "24/09",
+      "entradas_previstas": 11200.0,
+      "saidas_previstas": 0.0,
+      "saldo_projetado": 50221.2
+    },
+    {
+      "data": "2026-09-25",
+      "dia": "25/09",
+      "entradas_previstas": 0.0,
+      "saidas_previstas": 0.0,
+      "saldo_projetado": 50221.2
+    },
+    {
+      "data": "2026-09-26",
+      "dia": "26/09",
+      "entradas_previstas": 0.0,
+      "saidas_previstas": 1680.5,
+      "saldo_projetado": 48540.7
+    },
+    {
+      "data": "2026-09-27",
+      "dia": "27/09",
+      "entradas_previstas": 0.0,
+      "saidas_previstas": 0.0,
+      "saldo_projetado": 48540.7
+    },
+    {
+      "data": "2026-09-28",
+      "dia": "28/09",
+      "entradas_previstas": 0.0,
+      "saidas_previstas": 0.0,
+      "saldo_projetado": 48540.7
+    },
+    {
+      "data": "2026-09-29",
+      "dia": "29/09",
+      "entradas_previstas": 0.0,
+      "saidas_previstas": 0.0,
+      "saldo_projetado": 48540.7
+    },
+    {
+      "data": "2026-09-30",
+      "dia": "30/09",
+      "entradas_previstas": 18000.0,
+      "saidas_previstas": 0.0,
+      "saldo_projetado": 66540.7
+    },
+    {
+      "data": "2026-10-01",
+      "dia": "01/10",
+      "entradas_previstas": 0.0,
+      "saidas_previstas": 0.0,
+      "saldo_projetado": 66540.7
+    },
+    {
+      "data": "2026-10-02",
+      "dia": "02/10",
+      "entradas_previstas": 0.0,
+      "saidas_previstas": 6200.0,
+      "saldo_projetado": 60340.7
+    },
+    {
+      "data": "2026-10-03",
+      "dia": "03/10",
+      "entradas_previstas": 0.0,
+      "saidas_previstas": 0.0,
+      "saldo_projetado": 60340.7
+    },
+    {
+      "data": "2026-10-04",
+      "dia": "04/10",
+      "entradas_previstas": 0.0,
+      "saidas_previstas": 0.0,
+      "saldo_projetado": 60340.7
+    },
+    {
+      "data": "2026-10-05",
+      "dia": "05/10",
+      "entradas_previstas": 0.0,
+      "saidas_previstas": 0.0,
+      "saldo_projetado": 60340.7
+    },
+    {
+      "data": "2026-10-06",
+      "dia": "06/10",
+      "entradas_previstas": 0.0,
+      "saidas_previstas": 0.0,
+      "saldo_projetado": 60340.7
+    },
+    {
+      "data": "2026-10-07",
+      "dia": "07/10",
+      "entradas_previstas": 9500.0,
+      "saidas_previstas": 0.0,
+      "saldo_projetado": 69840.7
+    },
+    {
+      "data": "2026-10-08",
+      "dia": "08/10",
+      "entradas_previstas": 0.0,
+      "saidas_previstas": 0.0,
+      "saldo_projetado": 69840.7
+    },
+    {
+      "data": "2026-10-09",
+      "dia": "09/10",
+      "entradas_previstas": 0.0,
+      "saidas_previstas": 0.0,
+      "saldo_projetado": 69840.7
+    },
+    {
+      "data": "2026-10-10",
+      "dia": "10/10",
+      "entradas_previstas": 0.0,
+      "saidas_previstas": 3890.0,
+      "saldo_projetado": 65950.7
+    },
+    {
+      "data": "2026-10-11",
+      "dia": "11/10",
+      "entradas_previstas": 0.0,
+      "saidas_previstas": 0.0,
+      "saldo_projetado": 65950.7
+    },
+    {
+      "data": "2026-10-12",
+      "dia": "12/10",
+      "entradas_previstas": 0.0,
+      "saidas_previstas": 0.0,
+      "saldo_projetado": 65950.7
+    },
+    {
+      "data": "2026-10-13",
+      "dia": "13/10",
+      "entradas_previstas": 0.0,
+      "saidas_previstas": 0.0,
+      "saldo_projetado": 65950.7
+    },
+    {
+      "data": "2026-10-14",
+      "dia": "14/10",
+      "entradas_previstas": 0.0,
+      "saidas_previstas": 0.0,
+      "saldo_projetado": 65950.7
+    },
+    {
+      "data": "2026-10-15",
+      "dia": "15/10",
+      "entradas_previstas": 0.0,
+      "saidas_previstas": 0.0,
+      "saldo_projetado": 65950.7
+    },
+    {
+      "data": "2026-10-16",
+      "dia": "16/10",
+      "entradas_previstas": 0.0,
+      "saidas_previstas": 0.0,
+      "saldo_projetado": 65950.7
+    },
+    {
+      "data": "2026-10-17",
+      "dia": "17/10",
+      "entradas_previstas": 0.0,
+      "saidas_previstas": 0.0,
+      "saldo_projetado": 65950.7
+    },
+    {
+      "data": "2026-10-18",
+      "dia": "18/10",
+      "entradas_previstas": 0.0,
+      "saidas_previstas": 0.0,
+      "saldo_projetado": 65950.7
+    },
+    {
+      "data": "2026-10-19",
+      "dia": "19/10",
+      "entradas_previstas": 0.0,
+      "saidas_previstas": 0.0,
+      "saldo_projetado": 65950.7
+    },
+    {
+      "data": "2026-10-20",
+      "dia": "20/10",
+      "entradas_previstas": 0.0,
+      "saidas_previstas": 0.0,
+      "saldo_projetado": 65950.7
+    },
+    {
+      "data": "2026-10-21",
+      "dia": "21/10",
+      "entradas_previstas": 0.0,
+      "saidas_previstas": 0.0,
+      "saldo_projetado": 65950.7
+    },
+    {
+      "data": "2026-10-22",
+      "dia": "22/10",
+      "entradas_previstas": 0.0,
+      "saidas_previstas": 0.0,
+      "saldo_projetado": 65950.7
+    }
+  ],
+  "dre": {
+    "receita_bruta": 23400.0,
+    "deducoes": 178.0,
+    "receita_liquida": 23222.0,
+    "despesas": 11750.8,
+    "resultado_liquido": 11471.2,
+    "margem_percentual": 49.4
+  }
+}
