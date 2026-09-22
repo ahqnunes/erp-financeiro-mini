@@ -1,414 +1,251 @@
-# 💼 Mini-ERP Financeiro & Business Intelligence
+# 💼 erp-financeiro-mini
 
-> **Sistema Integrado de Gestão Financeira Corporativa para Pequenas e Médias Empresas.**  
-> Focado em controle operacional estrito de contas a pagar e receber, liquidações com integridade transacional (**ACID**), inteligência de negócios (**BI**) com **Projeção de Fluxo de Caixa (30 dias)** e **DRE Gerencial** através de um pipeline automatizado de dados.
-
----
-
-## 📑 Sumário Executivo
-
-1. [Arquitetura Geral do Sistema](#-arquitetura-geral-do-sistema)
-2. [Modelagem Relacional & DDL PostgreSQL](#-modelagem-relacional--ddl-postgresql)
-3. [Garantia de Isolamento Transacional ACID](#-garantia-de-isolamento-transacional-acid)
-4. [Módulo de Inteligência Analítica & Pipeline ETL](#-módulo-de-inteligência-analítica--pipeline-etl)
-5. [Infraestrutura, DevOps & Conteinerização](#-infraestrutura-devops--conteinerização)
-6. [Catálogo da API RESTful (OpenAPI 3.0)](#-catálogo-da-api-restful-openapi-30)
-7. [Guia de Instalação e Execução](#-guia-de-instalação-e-execução)
+> **Sistema Integrado de Gestão Financeira Corporativa & Business Intelligence (BI)**  
+> Plataforma full-stack para pequenas e médias empresas com controle operacional de contas a pagar e receber, baixas financeiras com cálculo de acréscimos/descontos, projeção de fluxo de caixa em 30 dias, DRE Gerencial com análise vertical e emissão de relatórios em PDF.
 
 ---
 
-## 🏛️ Arquitetura Geral do Sistema
+## 📑 Sumário
 
-A solução foi projetada sob uma arquitetura limpa e desacoplada, separando a camada de apresentação, a API corporativa de regras de negócio, o pipeline de dados analítico e o banco de dados relacional com isolamento transacional.
-
-```mermaid
-graph TD
-    subgraph Frontend [Camada Visual - React 19 + Tailwind CSS + Manrope]
-        UI_DASH[Dashboard Executivo & BI]
-        UI_OP[Operacional: Contas a Pagar / Receber]
-        UI_BX[Módulo de Baixas & Liquidações]
-        UI_CAD[Cadastros de Clientes, Fornecedores e Contas]
-        UI_DRE[DRE Gerencial & Análise Vertical]
-        PDF_EXP[Módulo de Exportação Vetorial PDF]
-    end
-
-    subgraph Backend [Servidor de Aplicação - Node.js / Express]
-        API[API RESTful / OpenAPI 3.0]
-        TX[Motor Transacional ACID com Rollback Automático]
-        DATA_SVC[Serviço de Persistência & Validação Decimal]
-    end
-
-    subgraph Analytics [Módulo de Inteligência de Dados - Python 3 / Pandas]
-        ETL_PY[Pipeline ETL: etl/pipeline.py]
-        FC_ENGINE[Motor de Projeção Diária de Caixa 30d]
-        DRE_ENGINE[Consolidador de DRE Gerencial]
-        ANALYTICS_OUT[(etl_output/analytics_latest.json)]
-    end
-
-    subgraph Database [Camada de Persistência Transacional - PostgreSQL 16]
-        TB_CLI[(clientes)]
-        TB_FOR[(fornecedores)]
-        TB_PC[(plano_de_contas)]
-        TB_TIT[(titulos_financeiros)]
-        TB_BX[(baixas_financeiras)]
-    end
-
-    UI_DASH --> API
-    UI_OP --> API
-    UI_BX --> API
-    UI_CAD --> API
-    UI_DRE --> API
-
-    API --> TX
-    API --> DATA_SVC
-    DATA_SVC --> Database
-    TX --> TB_TIT
-    TX --> TB_BX
-
-    ETL_PY -->|Extract & Transform| Database
-    ETL_PY --> FC_ENGINE
-    ETL_PY --> DRE_ENGINE
-    FC_ENGINE --> ANALYTICS_OUT
-    DRE_ENGINE --> ANALYTICS_OUT
-    API -.->|Serve Métricas| ANALYTICS_OUT
-```
+1. [Visão Geral e Funcionalidades](#-visão-geral-e-funcionalidades)
+2. [Stack Tecnológica](#-stack-tecnológica)
+3. [Arquitetura do Sistema](#-arquitetura-do-sistema)
+4. [Estrutura de Diretórios](#-estrutura-de-diretórios)
+5. [Guia de Instalação e Execução Local](#-guia-de-instalação-e-execução-local)
+6. [Solução de Problemas Comuns (Ambiente Local)](#-solução-de-problemas-comuns-ambiente-local)
+7. [Endpoints da API RESTful](#-endpoints-da-api-restful)
+8. [Scripts Disponíveis](#-scripts-disponíveis)
 
 ---
 
-## 📊 Modelagem Relacional & DDL PostgreSQL
+## 🚀 Visão Geral e Funcionalidades
 
-### Modelo Entidade-Relacionamento (MER)
+### 1. Dashboard Executivo & Business Intelligence
+- **Indicadores em Tempo Real (KPIs):** Saldo atual de caixa, previsão de recebimentos e pagamentos do mês, saldo projetado e total de títulos vencidos com alerta de inadimplência.
+- **Gráfico de Projeção Diária (30 dias):** Projeção contínua baseada nos vencimentos programados e impacto financeiro imediato de títulos vencidos.
+- **Próximos Vencimentos & Histórico Recente:** Tabela consolidada com ações rápidas para liquidação ou consulta.
 
-```mermaid
-erDiagram
-    CLIENTES ||--o{ TITULOS_FINANCEIROS : "possui (ON DELETE RESTRICT)"
-    FORNECEDORES ||--o{ TITULOS_FINANCEIROS : "recebe de (ON DELETE RESTRICT)"
-    PLANO_DE_CONTAS ||--o{ TITULOS_FINANCEIROS : "classifica (ON DELETE RESTRICT)"
-    PLANO_DE_CONTAS ||--o{ PLANO_DE_CONTAS : "categoria pai"
-    TITULOS_FINANCEIROS ||--o| BAIXAS_FINANCEIRAS : "liquidado por (1:1)"
+### 2. Contas a Pagar e Contas a Receber
+- Lançamento financeiro completo com vinculação obrigatória a Cliente (Receber) ou Fornecedor (Pagar).
+- Categorização contábil através do Plano de Contas.
+- Filtros dinâmicos por status (`PENDENTE`, `PAGO`, `VENCIDO`), tipo financeiro, busca textual por descrição ou parceiro, e intervalo de datas de vencimento.
+- Atualização automática de status para `VENCIDO` com base na data do sistema.
 
-    CLIENTES {
-        int id PK
-        varchar nome
-        varchar documento UK "CPF ou CNPJ único"
-        varchar contato
-        varchar email
-        text endereco
-        timestamp created_at
-    }
+### 3. Módulo de Baixas e Liquidações Financeiras
+- Quitação total de títulos em aberto.
+- Cálculo de acréscimos moratórios (juros) e deduções comerciais (descontos concedidos/obtidos) com precisão decimal exata.
+- Múltiplos meios de liquidação: `PIX`, `Boleto Bancário`, `Cartão Corporativo`, `Transferência Bancária (TED/DOC)` e `Dinheiro`.
+- Campo de observação contábil para auditoria e histórico de quitação.
 
-    FORNECEDORES {
-        int id PK
-        varchar nome
-        varchar documento UK "CNPJ ou CPF único"
-        varchar categoria
-        varchar contato
-        varchar email
-        text endereco
-        timestamp created_at
-    }
+### 4. DRE Gerencial & Análise Vertical
+- Apuração do Demonstrativo do Resultado do Exercício com base nas baixas efetivadas.
+- Estrutura contábil padrão:
+  - **Receita Operacional Bruta**
+  - **(-) Deduções e Descontos Concedidos**
+  - **(=) Receita Operacional Líquida (Base 100%)**
+  - **(-) Despesas Operacionais Detalhadas por Categoria**
+  - **(=) Resultado Líquido do Exercício (Lucro ou Prejuízo)**
+- **Análise Vertical:** Percentual de representatividade de cada linha e categoria sobre a receita líquida.
 
-    PLANO_DE_CONTAS {
-        int id PK
-        varchar codigo UK "ex: 1.01, 2.01"
-        varchar nome
-        varchar tipo "RECEITA ou DESPESA"
-        int categoria_pai_id FK
-        text descricao
-    }
+### 5. Cadastros Estruturados & Integridade Referencial
+- **Clientes e Fornecedores:** Cadastro com Razão Social / Nome, CNPJ/CPF, e-mail, telefone e endereço.
+- **Proteção Referencial:** Bloqueio de exclusão (`ON DELETE RESTRICT`) caso a entidade possua títulos financeiros vinculados.
+- **Plano de Contas:** Árvore de classificação financeira hierárquica por código estruturado (ex.: `1.01`, `2.05`).
 
-    TITULOS_FINANCEIROS {
-        int id PK
-        varchar tipo "PAGAR ou RECEBER"
-        int cliente_id FK
-        int fornecedor_id FK
-        int plano_contas_id FK
-        varchar descricao
-        decimal valor_original "NUMERIC(15,2)"
-        date data_emissao
-        date data_vencimento
-        varchar status "PENDENTE | PAGO | VENCIDO"
-    }
-
-    BAIXAS_FINANCEIRAS {
-        int id PK
-        int titulo_id FK,UK "Relacionamento estrito 1:1"
-        date data_pagamento
-        decimal valor_pago "NUMERIC(15,2)"
-        decimal juros "NUMERIC(15,2)"
-        decimal descontos "NUMERIC(15,2)"
-        varchar forma_de_pagamento "PIX | BOLETO | CARTAO | TED"
-        text observacao
-        timestamp created_at
-    }
-```
-
-### Script DDL Oficial (`database/schema.sql`)
-
-```sql
--- Habilita extensão para UUID ou funções auxiliares se necessário
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-
--- 1. Clientes
-CREATE TABLE IF NOT EXISTS clientes (
-    id SERIAL PRIMARY KEY,
-    nome VARCHAR(150) NOT NULL,
-    documento VARCHAR(20) NOT NULL UNIQUE,
-    contato VARCHAR(100),
-    email VARCHAR(100),
-    endereco TEXT,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-);
-
--- 2. Fornecedores
-CREATE TABLE IF NOT EXISTS fornecedores (
-    id SERIAL PRIMARY KEY,
-    nome VARCHAR(150) NOT NULL,
-    documento VARCHAR(20) NOT NULL UNIQUE,
-    categoria VARCHAR(50),
-    contato VARCHAR(100),
-    email VARCHAR(100),
-    endereco TEXT,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-);
-
--- 3. Plano de Contas Hierárquico
-CREATE TABLE IF NOT EXISTS plano_de_contas (
-    id SERIAL PRIMARY KEY,
-    codigo VARCHAR(20) NOT NULL UNIQUE,
-    nome VARCHAR(100) NOT NULL,
-    tipo VARCHAR(10) NOT NULL CHECK (tipo IN ('RECEITA', 'DESPESA')),
-    categoria_pai_id INTEGER REFERENCES plano_de_contas(id) ON DELETE SET NULL,
-    descricao TEXT
-);
-
--- 4. Títulos Financeiros (Contas a Pagar e Contas a Receber)
-CREATE TABLE IF NOT EXISTS titulos_financeiros (
-    id SERIAL PRIMARY KEY,
-    tipo VARCHAR(10) NOT NULL CHECK (tipo IN ('PAGAR', 'RECEBER')),
-    cliente_id INTEGER REFERENCES clientes(id) ON DELETE RESTRICT,
-    fornecedor_id INTEGER REFERENCES fornecedores(id) ON DELETE RESTRICT,
-    plano_contas_id INTEGER NOT NULL REFERENCES plano_de_contas(id) ON DELETE RESTRICT,
-    descricao VARCHAR(255) NOT NULL,
-    valor_original NUMERIC(15, 2) NOT NULL CHECK (valor_original > 0),
-    data_emissao DATE NOT NULL,
-    data_vencimento DATE NOT NULL,
-    status VARCHAR(15) NOT NULL DEFAULT 'PENDENTE' CHECK (status IN ('PENDENTE', 'PAGO', 'VENCIDO')),
-    CONSTRAINT chk_entidade CHECK (
-        (tipo = 'RECEBER' AND cliente_id IS NOT NULL) OR
-        (tipo = 'PAGAR' AND fornecedor_id IS NOT NULL)
-    )
-);
-
--- 5. Baixas Financeiras (Liquidação Auditada)
-CREATE TABLE IF NOT EXISTS baixas_financeiras (
-    id SERIAL PRIMARY KEY,
-    titulo_id INTEGER NOT NULL UNIQUE REFERENCES titulos_financeiros(id) ON DELETE RESTRICT,
-    data_pagamento DATE NOT NULL,
-    valor_pago NUMERIC(15, 2) NOT NULL CHECK (valor_pago >= 0),
-    juros NUMERIC(15, 2) NOT NULL DEFAULT 0.00 CHECK (juros >= 0),
-    descontos NUMERIC(15, 2) NOT NULL DEFAULT 0.00 CHECK (descontos >= 0),
-    forma_de_pagamento VARCHAR(20) NOT NULL CHECK (forma_de_pagamento IN ('PIX', 'BOLETO', 'CARTAO', 'TED')),
-    observacao TEXT,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-);
-
--- Índices de Performance Operacional
-CREATE INDEX idx_titulos_vencimento ON titulos_financeiros(data_vencimento);
-CREATE INDEX idx_titulos_status ON titulos_financeiros(status);
-CREATE INDEX idx_titulos_tipo ON titulos_financeiros(tipo);
-CREATE INDEX idx_baixas_data ON baixas_financeiras(data_pagamento);
-```
+### 6. Emissão de Relatórios em PDF
+- Exportação de relatórios vetoriais formatados em A4 via `jsPDF` e `jspdf-autotable`.
+- Relatório Executivo de Dashboard com tabela de fluxo e indicadores.
+- Relatório Oficial de DRE Gerencial com tabela de análise vertical e formatação contábil.
 
 ---
 
-## 🔒 Garantia de Isolamento Transacional ACID
+## 🛠 Stack Tecnológica
 
-A operação de liquidação (`POST /api/titulos/:id/baixa`) é o evento mais crítico da rotina financeira. Para evitar corrupção de dados, desvios e pagamentos fantasmas, ela segue isolamento estrito:
-
-### Validação Algorítmica da Liquidação:
-
-$$\text{Valor Efetivamente Pago} = \text{Valor Original do Título} + \text{Juros / Multa} - \text{Descontos Concedidos}$$
-
-### Fluxo Atômico no Backend:
-
-1. **BEGIN TRANSACTION**: Bloqueia a linha do título (`SELECT ... FOR UPDATE`).
-2. **Checagem de Idempotência**: Valida se o título já não foi liquidado previamente (`status = 'PAGO'`).
-3. **Verificação Aritmética**: Garante que o valor informado pelo operador coincide rigorosamente com os centavos calculados.
-4. **Persistência da Baixa**: Insere o registro em `baixas_financeiras` com a data efetiva e a forma de liquidação.
-5. **Atualização do Título**: Modifica o status para `PAGO`.
-6. **Atualização do Caixa**: Lança a movimentação no saldo imediato da empresa.
-7. **COMMIT**: Se tudo for executado sem erros, a transação é confirmada. Caso ocorra qualquer exceção em qualquer etapa, é disparado **ROLLBACK** imediato, garantindo que o banco permaneça íntegro.
-
----
-
-## 📈 Módulo de Inteligência Analítica & Pipeline ETL
-
-O pipeline de dados (`etl/pipeline.py`) implementa as fases clássicas de Engenharia de Dados:
-
-### 1. Extract (Extração)
-- Conecta ao PostgreSQL via SQLAlchemy e Pandas (com fallback de alta precisão nativo) para extrair o estado consolidado de títulos e liquidações.
-
-### 2. Transform (Transformação)
-- **Matriz de Projeção Diária (30 dias)**:
-  - Inicializa com o **Saldo Atual em Caixa**.
-  - Itera dia a dia ao longo de 30 dias futuros.
-  - Para cada dia $t$, consolida:
-    $$\text{Saldo Projetado}_t = \text{Saldo Projetado}_{t-1} + \sum \text{Recebimentos Previstos}_t - \sum \text{Pagamentos Agendados}_t$$
-  - Provisiona títulos vencidos não pagos no dia imediato para sinalizar risco de liquidez.
-- **DRE Gerencial (Demonstrativo do Resultado do Exercício)**:
-  - **Receita Operacional Bruta**: Soma de todos os títulos a receber liquidados no período.
-  - **(-) Deduções**: Descontos comerciais concedidos nas liquidações.
-  - **(=) Receita Operacional Líquida**: Base de cálculo (100%).
-  - **(-) Despesas Operacionais**: Consolidadas por centro de custo (nuvem, condomínio, pessoal, tributos).
-  - **(=) Lucro/Prejuízo Líquido**: Resultado contábil apurado.
-  - **Análise Vertical (%)**: Participação de cada grupo de despesa em relação à receita líquida.
-
-### 3. Load (Carga & Persistência)
-- O resultado é persistido em `etl_output/analytics_latest.json` e consumido em milissegundos pela rota de alta performance `GET /api/analytics/dashboard`.
-
----
-
-## 🐳 Infraestrutura, DevOps & Conteinerização
-
-### Orquestração com Docker Compose (`docker-compose.yml`)
-
-O ambiente produtivo orquestra a aplicação full-stack e o banco PostgreSQL de maneira isolada:
-
-```yaml
-version: '3.8'
-
-services:
-  postgres:
-    image: postgres:16-alpine
-    container_name: minierp_postgres
-    restart: always
-    environment:
-      POSTGRES_USER: ${POSTGRES_USER:-postgres}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgrespassword}
-      POSTGRES_DB: ${POSTGRES_DB:-minierp}
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-      - ./database/schema.sql:/docker-entrypoint-initdb.d/init.sql
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
-
-  app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: minierp_app
-    restart: always
-    ports:
-      - "3000:3000"
-    environment:
-      NODE_ENV: production
-      PORT: 3000
-      POSTGRES_HOST: postgres
-      POSTGRES_PORT: 5432
-      POSTGRES_DB: ${POSTGRES_DB:-minierp}
-      POSTGRES_USER: ${POSTGRES_USER:-postgres}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgrespassword}
-    depends_on:
-      postgres:
-        condition: service_healthy
-
-volumes:
-  postgres_data:
-    driver: local
-```
-
-### Dockerfile Multi-Stage (`Dockerfile`)
-
-```dockerfile
-# Estágio 1: Build da Aplicação
-FROM node:20-alpine AS builder
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci
-COPY . .
-RUN npm run build
-
-# Estágio 2: Runner de Produção
-FROM node:20-alpine AS runner
-WORKDIR /app
-ENV NODE_ENV=production
-ENV PORT=3000
-COPY package*.json ./
-RUN npm ci --only=production
-COPY --from=builder /app/dist ./dist
-EXPOSE 3000
-CMD ["node", "dist/server.cjs"]
-```
-
----
-
-## 📡 Catálogo da API RESTful (OpenAPI 3.0)
-
-A especificação interativa Swagger está disponível em `http://localhost:3000/api/docs/openapi.json`.
-
-| Método | Rota | Descrição |
+| Camada | Tecnologia | Detalhes |
 | :--- | :--- | :--- |
-| `GET` | `/api/health` | Verificação de disponibilidade (*healthcheck*) |
-| `GET` | `/api/docs/openapi.json` | Especificação completa OpenAPI 3.0 |
-| `GET` | `/api/analytics/dashboard` | Métricas de BI, KPIs, Projeção 30d e DRE Gerencial |
-| `POST`| `/api/analytics/recalcular` | Executa o pipeline ETL e atualiza os modelos analíticos |
-| `GET` | `/api/titulos` | Lista títulos com filtros (`tipo`, `status`, `busca`) |
-| `POST`| `/api/titulos` | Cadastra novo título financeiro (Pagar ou Receber) |
-| `DELETE`| `/api/titulos/:id` | Exclui título pendente |
-| `POST`| `/api/titulos/:id/baixa` | **Liquidação atômica com garantia transacional (ACID)** |
-| `GET` | `/api/baixas` | Histórico auditável de baixas realizadas |
+| **Frontend** | React 19 + TypeScript | SPA com componentes funcionais e hooks modernos |
+| **Estilização** | Tailwind CSS v4 | Estilização utilitária de alto contraste e layout responsivo |
+| **Ícones & Animações**| Lucide React + Motion | Feedback visual e transições suaves de abas e modais |
+| **Visualização de Dados**| Recharts 3 + `react-is` | Gráficos de área e linha para projeção do fluxo de caixa |
+| **Exportação PDF** | jsPDF + AutoTable | Geração de PDFs vetoriais com suporte a tabelas e cabeçalhos |
+| **Backend & Servidor**| Express.js + Node.js (TSX) | API RESTful unificada servindo a aplicação na porta 3000 |
+| **Pipeline Analítico**| FinancialETLPipeline | Motor analítico em TypeScript para consolidação de KPIs e DRE |
+| **Documentação API** | OpenAPI 3.0 / Swagger | Documentação disponível no endpoint `/api/docs/openapi.json` |
+
+---
+
+## 🏛 Arquitetura do Sistema
+
+```text
+┌─────────────────────────────────────────────────────────────┐
+│                    erp-financeiro-mini                      │
+└──────────────────────────────┬──────────────────────────────┘
+                               │
+       ┌───────────────────────┴───────────────────────┐
+       ▼                                               ▼
+┌──────────────────────────────┐       ┌──────────────────────────────┐
+│       Frontend (SPA)         │       │      Backend & Servidor      │
+│                              │       │                              │
+│ • React 19 + TypeScript      │◄─────►│ • Express.js (Porta 3000)    │
+│ • Tailwind CSS v4            │ HTTP  │ • Vite Middleware (Dev)      │
+│ • Recharts + jsPDF           │ JSON  │ • OpenAPI 3.0 Spec           │
+│ • Modais de Baixa e Filtros  │       │ • Repositório Transacional   │
+└──────────────────────────────┘       └──────────────┬───────────────┘
+                                                      │
+                                       ┌──────────────┴───────────────┐
+                                       ▼                              ▼
+                       ┌──────────────────────────────┐ ┌──────────────────────────────┐
+                       │    Pipeline Analítico ETL    │ │  Motor de Regras & Registros │
+                       │                              │ │                              │
+                       │ • Posição Realizada de Caixa │ │ • Clientes & Fornecedores    │
+                       │ • Projeção de Caixa 30 Dias  │ │ • Plano de Contas            │
+                       │ • DRE Gerencial + Análise %  │ │ • Títulos & Baixas           │
+                       └──────────────────────────────┘ └──────────────────────────────┘
+```
+
+---
+
+## 📁 Estrutura de Diretórios
+
+```text
+erp-financeiro-mini/
+├── server.ts                    # Ponto de entrada do servidor unificado (Express + Vite)
+├── index.html                   # HTML base da aplicação SPA
+├── package.json                 # Manifesto do projeto e dependências
+├── tsconfig.json                # Configurações do compilador TypeScript
+├── vite.config.ts               # Configuração do Vite com otimização de dependências
+│
+├── server/                      # Camada de Backend
+│   ├── db.ts                    # Mecanismo de persistência e validação de regras de negócio
+│   ├── etl.ts                   # Pipeline analítico de cálculo do fluxo e DRE
+│   └── openapi.ts               # Especificação OpenAPI 3.0 dos endpoints
+│
+├── src/                         # Camada de Frontend
+│   ├── main.tsx                 # Ponto de inicialização do React
+│   ├── App.tsx                  # Componente principal e orquestrador de telas
+│   ├── index.css                # Configurações globais de estilo e tipografia tabular
+│   ├── types/
+│   │   └── finance.ts           # Interfaces e tipos TypeScript de todo o domínio
+│   ├── services/
+│   │   └── api.ts               # Cliente HTTP consumindo a API REST
+│   ├── components/
+│   │   ├── Header.tsx           # Barra superior com ações e status do sistema
+│   │   ├── Sidebar.tsx          # Menu de navegação entre módulos
+│   │   ├── Dashboard.tsx        # Tela de BI, KPIs e gráficos analíticos
+│   │   ├── TitulosManager.tsx   # Gestão de Contas a Pagar e Receber
+│   │   ├── ModalBaixa.tsx       # Modal de quitação com juros/descontos
+│   │   ├── ModalNovoTitulo.tsx  # Modal de cadastro de novos títulos
+│   │   ├── DREView.tsx          # Demonstrativo do Resultado do Exercício
+│   │   └── CadastrosManager.tsx # Gerenciador de Clientes, Fornecedores e Contas
+│   └── utils/
+│       ├── formatters.ts        # Formatadores de moeda (BRL), data e documentos
+│       └── pdfExport.ts         # Exportação vetorial de relatórios em PDF
+```
+
+---
+
+## 💻 Guia de Instalação e Execução Local
+
+### 1. Pré-requisitos
+- **Node.js**: Versão 20 recomendada (mínimo 18.x)
+- **npm**: Versão 9+ ou **pnpm** / **yarn**
+
+### 2. Passo a Passo
+
+1. **Abra o terminal** na pasta do projeto:
+   ```bash
+   cd erp-financeiro-mini
+   ```
+
+2. **Instale as dependências:**
+   > **Nota:** Use a flag `--legacy-peer-deps` para garantir compatibilidade com as versões estritas do Vite/Esbuild no ambiente local:
+   ```bash
+   npm install --legacy-peer-deps
+   ```
+
+3. **Inicie o servidor de desenvolvimento:**
+   ```bash
+   npm run dev
+   ```
+
+4. **Acesse a aplicação:**
+   Abra o navegador no endereço:
+   ```text
+   http://localhost:3000
+   ```
+
+---
+
+## 🔧 Solução de Problemas Comuns (Ambiente Local)
+
+### Erro: `Failed to resolve import "react-is" from recharts`
+Se aparecer esse erro ao abrir o navegador pela primeira vez, significa que o cache pré-compilado do Vite precisa ser atualizado:
+
+1. Pare o servidor (`Ctrl + C`).
+2. Limpe o diretório de cache do Vite:
+   - **No Windows (PowerShell):**
+     ```powershell
+     Remove-Item -Recurse -Force node_modules\.vite
+     ```
+   - **No Windows (CMD):**
+     ```cmd
+     rd /s /q node_modules\.vite
+     ```
+   - **No Linux / macOS:**
+     ```bash
+     rm -rf node_modules/.vite
+     ```
+3. Inicie o servidor novamente:
+   ```bash
+   npm run dev
+   ```
+
+---
+
+## 🌐 Endpoints da API RESTful
+
+A documentação interativa OpenAPI 3.0 completa pode ser consultada no endpoint:  
+`GET /api/docs/openapi.json`
+
+| Método | Endpoint | Descrição |
+| :--- | :--- | :--- |
+| `GET` | `/api/health` | Verificação de disponibilidade do servidor |
+| `GET` | `/api/analytics/dashboard` | Retorna KPIs, projeção de fluxo de 30 dias e DRE consolidado |
+| `POST` | `/api/analytics/recalcular` | Executa o recálculo do pipeline analítico sob demanda |
+| `POST` | `/api/reset-demo` | Restaura a base de dados de demonstração padrão |
+| `GET` | `/api/titulos` | Lista títulos com filtros opcionais (`tipo`, `status`, `periodoInicio`, `periodoFim`) |
+| `GET` | `/api/titulos/:id` | Obtém os dados detalhados de um título por ID |
+| `POST` | `/api/titulos` | Cadastra um novo título a pagar ou a receber |
+| `DELETE` | `/api/titulos/:id` | Remove um título em aberto (títulos pagos são bloqueados) |
+| `POST` | `/api/titulos/:id/baixa` | Registra a liquidação financeira de um título com juros/descontos |
+| `GET` | `/api/baixas` | Lista o histórico completo de baixas e liquidações |
 | `GET` | `/api/clientes` | Lista todos os clientes cadastrados |
-| `POST`| `/api/clientes` | Cadastra novo cliente |
+| `POST` | `/api/clientes` | Cadastra um novo cliente |
 | `PUT` | `/api/clientes/:id` | Atualiza dados cadastrais do cliente |
-| `DELETE`| `/api/clientes/:id` | Exclui cliente (validação `ON DELETE RESTRICT`) |
-| `GET` | `/api/fornecedores` | Lista todos os fornecedores |
-| `POST`| `/api/fornecedores` | Cadastra novo fornecedor |
+| `DELETE` | `/api/clientes/:id` | Exclui cliente (bloqueado se houver títulos vinculados) |
+| `GET` | `/api/fornecedores` | Lista todos os fornecedores cadastrados |
+| `POST` | `/api/fornecedores` | Cadastra um novo fornecedor |
 | `PUT` | `/api/fornecedores/:id` | Atualiza dados cadastrais do fornecedor |
-| `DELETE`| `/api/fornecedores/:id` | Exclui fornecedor (validação `ON DELETE RESTRICT`) |
+| `DELETE` | `/api/fornecedores/:id` | Exclui fornecedor (bloqueado se houver títulos vinculados) |
 | `GET` | `/api/plano-contas` | Lista o plano de contas contábil e gerencial |
-| `POST`| `/api/demo/reset` | Restaura a base de demonstração para seu estado padrão |
+| `POST` | `/api/plano-contas` | Adiciona uma nova categoria no plano de contas |
 
 ---
 
-## 💻 Guia de Instalação e Execução
+## 📜 Scripts Disponíveis
 
-### Opção 1: Execução com Docker (Recomendado)
+No arquivo `package.json`, estão configurados os seguintes comandos:
 
-```bash
-# 1. Clonar o repositório
-git clone https://github.com/seu-usuario/mini-erp-financeiro.git
-cd mini-erp-financeiro
-
-# 2. Subir o ambiente completo
-docker compose up --build -d
-
-# 3. Acessar a aplicação
-# Interface Web: http://localhost:3000
-```
-
-### Opção 2: Execução Local (Node.js & Python)
-
-```bash
-# 1. Instalar as dependências do projeto
-npm install
-
-# 2. Iniciar o servidor de desenvolvimento (Express + Vite na porta 3000)
-npm run dev
-
-# 3. Executar o Pipeline ETL em segundo plano (Opcional)
-python3 etl/pipeline.py
-```
+| Comando | Finalidade |
+| :--- | :--- |
+| `npm run dev` | Inicia o servidor de desenvolvimento Express + Vite com recarregamento sob demanda |
+| `npm run build` | Compila o bundle estático do frontend com o Vite e empacota o backend com o esbuild em `dist/` |
+| `npm start` | Inicia o servidor Node.js apontando para a pasta compilada `dist/` em modo de produção |
+| `npm run lint` | Executa a validação estática de tipos do TypeScript sem gerar arquivos (`tsc --noEmit`) |
+| `npm run clean` | Remove as pastas de compilação `dist/` e arquivos temporários |
 
 ---
 
-## 📄 Licença e Padrões de Engenharia
+## 📄 Licença
 
-- **Tipografia**: Manrope & JetBrains Mono (alinhamento numérico tabular).
-- **Cores & Acessibilidade**: Paleta corporativa *slate* de alto contraste com conformidade WCAG AA.
-- **Padrão de Precisão Numérica**: Aritmética decimal imune a imprecisões de ponto flutuante.
+Distribuído sob licença comercial interna / proprietária para uso em gestão corporativa e financeira de pequenas e médias empresas.
