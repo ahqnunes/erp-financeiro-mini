@@ -99,18 +99,18 @@ export const NovoLancamentoModal: React.FC<NovoLancamentoModalProps> = ({
   };
 
   return (
-    <div id="modal-novo-lancamento-backdrop" className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-xs p-4 overflow-y-auto">
-      <div id="modal-novo-lancamento-content" className="bg-white rounded-xl shadow-xl border border-slate-200 w-full max-w-lg overflow-hidden animate-in fade-in duration-200">
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-slate-50">
+    <div id="modal-novo-lancamento-backdrop" className="fixed inset-0 z-50 flex items-center justify-center bg-stone-900/40 backdrop-blur-xs p-4 overflow-y-auto">
+      <div id="modal-novo-lancamento-content" className="bg-white rounded-2xl shadow-xl border border-stone-200 w-full max-w-lg overflow-hidden animate-in fade-in duration-200">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-stone-100 bg-stone-50">
           <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-lg bg-indigo-100 text-indigo-700 flex items-center justify-center">
               <PlusCircle className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-base font-semibold text-slate-800">
+              <h3 className="text-base font-semibold text-stone-800">
                 Novo Lançamento Financeiro
               </h3>
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-stone-500">
                 Lançamento de Título a Pagar ou a Receber
               </p>
             </div>
@@ -118,7 +118,7 @@ export const NovoLancamentoModal: React.FC<NovoLancamentoModalProps> = ({
           <button
             id="btn-fechar-modal-lancamento"
             onClick={onClose}
-            className="text-slate-400 hover:text-slate-600 p-1 rounded-lg hover:bg-slate-200/60 transition"
+            className="text-stone-400 hover:text-stone-600 p-1 rounded-lg hover:bg-stone-200/60 transition"
           >
             <X className="w-5 h-5" />
           </button>
@@ -133,7 +133,7 @@ export const NovoLancamentoModal: React.FC<NovoLancamentoModalProps> = ({
           )}
 
           <div>
-            <label className="block text-xs font-medium text-slate-700 mb-1.5">
+            <label className="block text-xs font-medium text-stone-700 mb-1.5">
               Tipo do Título *
             </label>
             <div className="grid grid-cols-2 gap-3">
@@ -146,11 +146,11 @@ export const NovoLancamentoModal: React.FC<NovoLancamentoModalProps> = ({
                 }}
                 className={`py-2 px-3 rounded-lg border text-xs font-semibold flex items-center justify-center gap-2 transition ${
                   tipo === 'RECEBER'
-                    ? 'bg-emerald-50 border-emerald-500 text-emerald-800 ring-2 ring-emerald-500/20'
-                    : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
+                    ? 'bg-teal-50 border-teal-500 text-teal-800 ring-2 ring-teal-500/20'
+                    : 'bg-white border-stone-200 text-stone-600 hover:bg-stone-50'
                 }`}
               >
-                <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+                <span className="w-2 h-2 rounded-full bg-teal-500"></span>
                 Contas a Receber (Entrada)
               </button>
               <button
@@ -162,18 +162,18 @@ export const NovoLancamentoModal: React.FC<NovoLancamentoModalProps> = ({
                 }}
                 className={`py-2 px-3 rounded-lg border text-xs font-semibold flex items-center justify-center gap-2 transition ${
                   tipo === 'PAGAR'
-                    ? 'bg-rose-50 border-rose-500 text-rose-800 ring-2 ring-rose-500/20'
-                    : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
+                    ? 'bg-orange-50 border-orange-600 text-orange-800 ring-2 ring-orange-500/20'
+                    : 'bg-white border-stone-200 text-stone-600 hover:bg-stone-50'
                 }`}
               >
-                <span className="w-2 h-2 rounded-full bg-rose-500"></span>
+                <span className="w-2 h-2 rounded-full bg-orange-600"></span>
                 Contas a Pagar (Saída)
               </button>
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-medium text-slate-700 mb-1">
+            <label className="block text-xs font-medium text-stone-700 mb-1">
               {tipo === 'RECEBER' ? 'Cliente *' : 'Fornecedor *'}
             </label>
             {tipo === 'RECEBER' ? (
@@ -182,7 +182,7 @@ export const NovoLancamentoModal: React.FC<NovoLancamentoModalProps> = ({
                 required
                 value={clienteId}
                 onChange={e => setClienteId(e.target.value)}
-                className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 bg-white"
+                className="w-full px-3 py-2 text-sm border border-stone-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 bg-white"
               >
                 <option value="">Selecione o Cliente...</option>
                 {clientes.map(c => (
@@ -197,7 +197,7 @@ export const NovoLancamentoModal: React.FC<NovoLancamentoModalProps> = ({
                 required
                 value={fornecedorId}
                 onChange={e => setFornecedorId(e.target.value)}
-                className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 bg-white"
+                className="w-full px-3 py-2 text-sm border border-stone-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 bg-white"
               >
                 <option value="">Selecione o Fornecedor...</option>
                 {fornecedores.map(f => (
@@ -210,7 +210,7 @@ export const NovoLancamentoModal: React.FC<NovoLancamentoModalProps> = ({
           </div>
 
           <div>
-            <label className="block text-xs font-medium text-slate-700 mb-1">
+            <label className="block text-xs font-medium text-stone-700 mb-1">
               Categoria do Plano de Contas *
             </label>
             <select
@@ -218,7 +218,7 @@ export const NovoLancamentoModal: React.FC<NovoLancamentoModalProps> = ({
               required
               value={planoContasId}
               onChange={e => setPlanoContasId(e.target.value)}
-              className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 bg-white"
+              className="w-full px-3 py-2 text-sm border border-stone-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 bg-white"
             >
               <option value="">Selecione a Categoria Financeira...</option>
               {planosFiltrados.map(p => (
@@ -230,7 +230,7 @@ export const NovoLancamentoModal: React.FC<NovoLancamentoModalProps> = ({
           </div>
 
           <div>
-            <label className="block text-xs font-medium text-slate-700 mb-1">
+            <label className="block text-xs font-medium text-stone-700 mb-1">
               Descrição do Título *
             </label>
             <input
@@ -240,16 +240,16 @@ export const NovoLancamentoModal: React.FC<NovoLancamentoModalProps> = ({
               placeholder="Ex: Fatura 104 - Licenciamento de Software"
               value={descricao}
               onChange={e => setDescricao(e.target.value)}
-              className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+              className="w-full px-3 py-2 text-sm border border-stone-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-medium text-slate-700 mb-1">
+            <label className="block text-xs font-medium text-stone-700 mb-1">
               Valor Original (R$) *
             </label>
             <div className="relative">
-              <span className="absolute left-3 top-2 text-xs text-slate-400">R$</span>
+              <span className="absolute left-3 top-2 text-xs text-stone-400">R$</span>
               <input
                 id="input-lancamento-valor"
                 type="number"
@@ -259,14 +259,14 @@ export const NovoLancamentoModal: React.FC<NovoLancamentoModalProps> = ({
                 placeholder="0,00"
                 value={valorOriginal}
                 onChange={e => setValorOriginal(e.target.value)}
-                className="w-full pl-9 pr-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 font-semibold"
+                className="w-full pl-9 pr-3 py-2 text-sm border border-stone-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 font-semibold"
               />
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-medium text-slate-700 mb-1">
+              <label className="block text-xs font-medium text-stone-700 mb-1">
                 Data de Emissão *
               </label>
               <input
@@ -275,11 +275,11 @@ export const NovoLancamentoModal: React.FC<NovoLancamentoModalProps> = ({
                 required
                 value={dataEmissao}
                 onChange={e => setDataEmissao(e.target.value)}
-                className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+                className="w-full px-3 py-2 text-sm border border-stone-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
               />
             </div>
             <div>
-              <label className="block text-xs font-medium text-slate-700 mb-1">
+              <label className="block text-xs font-medium text-stone-700 mb-1">
                 Data de Vencimento *
               </label>
               <input
@@ -288,18 +288,18 @@ export const NovoLancamentoModal: React.FC<NovoLancamentoModalProps> = ({
                 required
                 value={dataVencimento}
                 onChange={e => setDataVencimento(e.target.value)}
-                className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+                className="w-full px-3 py-2 text-sm border border-stone-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
               />
             </div>
           </div>
 
-          <div className="flex items-center justify-end gap-2 pt-3 border-t border-slate-100">
+          <div className="flex items-center justify-end gap-2 pt-3 border-t border-stone-100">
             <button
               id="btn-cancelar-lancamento"
               type="button"
               onClick={onClose}
               disabled={loading}
-              className="px-4 py-2 text-xs font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-lg transition"
+              className="px-4 py-2 text-xs font-medium text-stone-600 bg-stone-100 hover:bg-stone-200 rounded-lg transition"
             >
               Cancelar
             </button>
@@ -307,7 +307,7 @@ export const NovoLancamentoModal: React.FC<NovoLancamentoModalProps> = ({
               id="btn-salvar-lancamento"
               type="submit"
               disabled={loading}
-              className="px-4 py-2 text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition shadow-xs disabled:opacity-50"
+              className="px-4 py-2 text-xs font-medium text-white bg-indigo-700 hover:bg-indigo-800 rounded-lg transition shadow-xs disabled:opacity-50"
             >
               {loading ? 'Salvando...' : 'Salvar Lançamento'}
             </button>

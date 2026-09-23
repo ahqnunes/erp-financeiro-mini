@@ -42,20 +42,20 @@ export const Header: React.FC<HeaderProps> = ({
   const info = tabTitles[currentTab];
 
   return (
-    <header id="main-header" className="h-16 bg-white border-b border-slate-200 px-6 flex items-center justify-between shrink-0">
+    <header id="main-header" className="h-16 bg-white border-b border-stone-200 px-6 flex items-center justify-between shrink-0">
       <div>
-        <h2 className="text-sm font-bold text-slate-800 tracking-tight">{info.title}</h2>
-        <p className="text-xs text-slate-500">{info.subtitle}</p>
+        <h2 className="text-sm font-bold text-stone-800 tracking-tight">{info.title}</h2>
+        <p className="text-xs text-stone-500">{info.subtitle}</p>
       </div>
 
       <div className="flex items-center gap-3">
-        <div className="flex items-center gap-2 px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg">
-          <Wallet className="w-4 h-4 text-emerald-600" />
+        <div className="flex items-center gap-2 px-3 py-1.5 bg-teal-50 border border-teal-100 rounded-lg">
+          <Wallet className="w-4 h-4 text-teal-600" />
           <div className="text-right">
-            <span className="text-[10px] uppercase font-semibold text-slate-400 block leading-none">
-              Saldo em Caixa
+            <span className="text-[10px] font-semibold text-teal-700/70 block leading-none">
+              Saldo em caixa
             </span>
-            <span className="text-xs font-bold text-slate-900 leading-tight">
+            <span className="text-xs font-bold text-teal-900 leading-tight tabular-nums">
               {formatCurrency(saldoCaixaAtual)}
             </span>
           </div>
@@ -64,17 +64,17 @@ export const Header: React.FC<HeaderProps> = ({
         <button
           id="btn-header-novo-lancamento"
           onClick={onNovoLancamento}
-          className="flex items-center gap-1.5 px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-semibold shadow-xs transition"
+          className="flex items-center gap-1.5 px-3 py-2 bg-indigo-700 hover:bg-indigo-800 text-white rounded-lg text-xs font-semibold transition"
         >
           <Plus className="w-4 h-4" />
-          <span>Novo Lançamento</span>
+          <span>Novo lançamento</span>
         </button>
 
         <button
           id="btn-header-reset-demo"
           onClick={onResetDemo}
           title="Restaurar dados originais de demonstração"
-          className="p-2 text-slate-500 hover:text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition"
+          className="p-2 text-stone-400 hover:text-stone-700 hover:bg-stone-100 rounded-lg transition"
         >
           <RotateCcw className="w-4 h-4" />
         </button>

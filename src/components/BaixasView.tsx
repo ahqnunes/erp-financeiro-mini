@@ -21,13 +21,13 @@ export const BaixasView: React.FC<BaixasViewProps> = ({
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center gap-2 border-b border-slate-200">
+      <div className="flex items-center gap-2 border-b border-stone-200">
         <button
           onClick={() => setAbaAtiva('pendentes')}
           className={`py-2 px-4 text-xs font-semibold border-b-2 transition flex items-center gap-2 ${
             abaAtiva === 'pendentes'
-              ? 'border-blue-600 text-blue-700'
-              : 'border-transparent text-slate-500 hover:text-slate-800'
+              ? 'border-indigo-700 text-indigo-700'
+              : 'border-transparent text-stone-500 hover:text-stone-800'
           }`}
         >
           <CreditCard className="w-4 h-4" />
@@ -43,8 +43,8 @@ export const BaixasView: React.FC<BaixasViewProps> = ({
           onClick={() => setAbaAtiva('historico')}
           className={`py-2 px-4 text-xs font-semibold border-b-2 transition flex items-center gap-2 ${
             abaAtiva === 'historico'
-              ? 'border-blue-600 text-blue-700'
-              : 'border-transparent text-slate-500 hover:text-slate-800'
+              ? 'border-indigo-700 text-indigo-700'
+              : 'border-transparent text-stone-500 hover:text-stone-800'
           }`}
         >
           <History className="w-4 h-4" />
@@ -53,10 +53,10 @@ export const BaixasView: React.FC<BaixasViewProps> = ({
       </div>
 
       {abaAtiva === 'pendentes' && (
-        <div className="bg-white rounded-xl border border-slate-200 shadow-xs overflow-hidden">
-          <div className="p-4 border-b border-slate-100 flex items-center justify-between">
-            <span className="text-xs font-bold text-slate-800">Títulos aguardando liquidação</span>
-            <span className="text-xs text-slate-500">
+        <div className="bg-white rounded-2xl border border-stone-200 overflow-hidden">
+          <div className="p-4 border-b border-stone-100 flex items-center justify-between">
+            <span className="text-xs font-bold text-stone-800">Títulos aguardando liquidação</span>
+            <span className="text-xs text-stone-500">
               Clique em &quot;Dar Baixa&quot; para abrir a janela de cálculo de juros/descontos
             </span>
           </div>
@@ -64,7 +64,7 @@ export const BaixasView: React.FC<BaixasViewProps> = ({
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="border-b border-slate-200 bg-slate-50/70 text-[11px] font-semibold text-slate-500 uppercase tracking-wider">
+                <tr className="border-b border-stone-200 bg-stone-50/70 text-[11px] font-semibold text-stone-500">
                   <th className="py-3 px-4">Tipo</th>
                   <th className="py-3 px-4">Descrição</th>
                   <th className="py-3 px-4">Entidade</th>
@@ -75,10 +75,10 @@ export const BaixasView: React.FC<BaixasViewProps> = ({
                   <th className="py-3 px-4 text-right">Ação</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 text-xs">
+              <tbody className="divide-y divide-stone-100 text-xs">
                 {titulosParaBaixar.length === 0 ? (
                   <tr>
-                    <td colSpan={8} className="py-8 text-center text-slate-400">
+                    <td colSpan={8} className="py-8 text-center text-stone-400">
                       Nenhum título pendente no momento.
                     </td>
                   </tr>
@@ -86,25 +86,25 @@ export const BaixasView: React.FC<BaixasViewProps> = ({
                   titulosParaBaixar.map(titulo => {
                     const isReceber = titulo.tipo === 'RECEBER';
                     return (
-                      <tr key={titulo.id} className="hover:bg-slate-50/80 transition">
+                      <tr key={titulo.id} className="hover:bg-stone-50/80 transition">
                         <td className="py-3 px-4">
                           <span
                             className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold ${
                               isReceber
-                                ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-                                : 'bg-rose-50 text-rose-700 border border-rose-200'
+                                ? 'bg-teal-50 text-teal-700 border border-teal-200'
+                                : 'bg-orange-50 text-orange-700 border border-orange-200'
                             }`}
                           >
                             {isReceber ? 'RECEBER' : 'PAGAR'}
                           </span>
                         </td>
-                        <td className="py-3 px-4 font-medium text-slate-900">{titulo.descricao}</td>
-                        <td className="py-3 px-4 text-slate-700">{titulo.entidadeNome}</td>
-                        <td className="py-3 px-4 text-slate-500">{titulo.planoContasNome}</td>
-                        <td className="py-3 px-4 text-slate-700 font-medium">
+                        <td className="py-3 px-4 font-medium text-stone-900">{titulo.descricao}</td>
+                        <td className="py-3 px-4 text-stone-700">{titulo.entidadeNome}</td>
+                        <td className="py-3 px-4 text-stone-500">{titulo.planoContasNome}</td>
+                        <td className="py-3 px-4 text-stone-700 font-medium">
                           {formatDate(titulo.dataVencimento)}
                         </td>
-                        <td className="py-3 px-4 text-right font-bold text-slate-900">
+                        <td className="py-3 px-4 text-right font-bold text-stone-900 tabular-nums">
                           {formatCurrency(titulo.valorOriginal)}
                         </td>
                         <td className="py-3 px-4 text-center">
@@ -122,7 +122,7 @@ export const BaixasView: React.FC<BaixasViewProps> = ({
                         <td className="py-3 px-4 text-right">
                           <button
                             onClick={() => onDarBaixa(titulo)}
-                            className="px-3 py-1.5 text-xs font-semibold bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg transition shadow-xs"
+                            className="px-3 py-1.5 text-xs font-semibold bg-teal-600 hover:bg-teal-700 text-white rounded-lg transition"
                           >
                             Dar Baixa
                           </button>
@@ -138,16 +138,16 @@ export const BaixasView: React.FC<BaixasViewProps> = ({
       )}
 
       {abaAtiva === 'historico' && (
-        <div className="bg-white rounded-xl border border-slate-200 shadow-xs overflow-hidden">
-          <div className="p-4 border-b border-slate-100 flex items-center justify-between">
-            <span className="text-xs font-bold text-slate-800">Registro de Liquidações Efetivadas</span>
-            <span className="text-xs text-slate-500">Histórico de baixas financeiras</span>
+        <div className="bg-white rounded-2xl border border-stone-200 overflow-hidden">
+          <div className="p-4 border-b border-stone-100 flex items-center justify-between">
+            <span className="text-xs font-bold text-stone-800">Registro de Liquidações Efetivadas</span>
+            <span className="text-xs text-stone-500">Histórico de baixas financeiras</span>
           </div>
 
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="border-b border-slate-200 bg-slate-50/70 text-[11px] font-semibold text-slate-500 uppercase tracking-wider">
+                <tr className="border-b border-stone-200 bg-stone-50/70 text-[11px] font-semibold text-stone-500">
                   <th className="py-3 px-4">Baixa #</th>
                   <th className="py-3 px-4">Data Pagamento</th>
                   <th className="py-3 px-4">Título Vinculado</th>
@@ -159,10 +159,10 @@ export const BaixasView: React.FC<BaixasViewProps> = ({
                   <th className="py-3 px-4">Observação</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 text-xs">
+              <tbody className="divide-y divide-stone-100 text-xs">
                 {baixas.length === 0 ? (
                   <tr>
-                    <td colSpan={9} className="py-8 text-center text-slate-400">
+                    <td colSpan={9} className="py-8 text-center text-stone-400">
                       Nenhuma baixa registrada ainda.
                     </td>
                   </tr>
@@ -170,29 +170,29 @@ export const BaixasView: React.FC<BaixasViewProps> = ({
                   baixas.map(baixa => {
                     const titulo = titulos.find(t => t.id === baixa.tituloId);
                     return (
-                      <tr key={baixa.id} className="hover:bg-slate-50/80 transition">
-                        <td className="py-3 px-4 font-mono text-slate-400">#{baixa.id}</td>
-                        <td className="py-3 px-4 font-medium text-slate-800">{formatDate(baixa.dataPagamento)}</td>
+                      <tr key={baixa.id} className="hover:bg-stone-50/80 transition">
+                        <td className="py-3 px-4 font-mono text-stone-400">#{baixa.id}</td>
+                        <td className="py-3 px-4 font-medium text-stone-800">{formatDate(baixa.dataPagamento)}</td>
                         <td className="py-3 px-4">
-                          <span className="font-medium text-slate-900">{titulo?.descricao || `Título #${baixa.tituloId}`}</span>
-                          <span className="text-[10px] text-slate-400 block">{titulo?.entidadeNome}</span>
+                          <span className="font-medium text-stone-900">{titulo?.descricao || `Título #${baixa.tituloId}`}</span>
+                          <span className="text-[10px] text-stone-400 block">{titulo?.entidadeNome}</span>
                         </td>
                         <td className="py-3 px-4">
-                          <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold bg-slate-100 text-slate-700">
+                          <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold bg-stone-100 text-stone-700">
                             {baixa.formaDePagamento}
                           </span>
                         </td>
-                        <td className="py-3 px-4 text-right text-slate-600">{formatCurrency(baixa.valorOriginal)}</td>
-                        <td className="py-3 px-4 text-right text-rose-600">
+                        <td className="py-3 px-4 text-right text-stone-600 tabular-nums">{formatCurrency(baixa.valorOriginal)}</td>
+                        <td className="py-3 px-4 text-right text-rose-600 tabular-nums">
                           {baixa.juros > 0 ? `+${formatCurrency(baixa.juros)}` : '-'}
                         </td>
-                        <td className="py-3 px-4 text-right text-emerald-600">
+                        <td className="py-3 px-4 text-right text-teal-600 tabular-nums">
                           {baixa.descontos > 0 ? `-${formatCurrency(baixa.descontos)}` : '-'}
                         </td>
-                        <td className="py-3 px-4 text-right font-bold text-slate-900">
+                        <td className="py-3 px-4 text-right font-bold text-stone-900 tabular-nums">
                           {formatCurrency(baixa.valorPago)}
                         </td>
-                        <td className="py-3 px-4 text-slate-500 max-w-xs truncate">
+                        <td className="py-3 px-4 text-stone-500 max-w-xs truncate">
                           {baixa.observacao || '-'}
                         </td>
                       </tr>

@@ -1,11 +1,10 @@
-
 export const openApiSpec = {
   openapi: '3.0.3',
   info: {
     title: 'Mini-ERP Financeiro & Business Intelligence API',
     version: '1.0.0',
     description:
-      'API RESTful corporativa para gestão financeira integrada: controle de clientes, fornecedores, plano de contas, contas a pagar e receber, liquidação transacional (ACID) e inteligência de negócios (ETL, Projeção de Fluxo de Caixa 30d e DRE Gerencial).',
+      'API RESTful corporativa para gestão financeira integrada: controle de clientes, fornecedores, plano de contas, contas a pagar e receber, liquidação financeira e inteligência de negócios (ETL, Projeção de Fluxo de Caixa 30d e DRE Gerencial).',
     contact: {
       name: 'Equipe de Engenharia Financeira',
       email: 'engenharia@minierp.com.br',
@@ -17,22 +16,10 @@ export const openApiSpec = {
       description: 'Servidor Local / Container',
     },
   ],
-  components: {
-    securitySchemes: {
-      bearerAuth: {
-        type: 'http',
-        scheme: 'bearer',
-        bearerFormat: 'JWT',
-        description:
-          'TODO: confirmar mecanismo de autenticação real antes de produção. Placeholder para exigir token em todas as rotas que alteram estado financeiro (ex: baixas).',
-      },
-    },
-  },
-  security: [{ bearerAuth: [] }],
   tags: [
     { name: 'Dashboard & BI', description: 'Inteligência de negócios, projeção de fluxo de caixa e DRE' },
     { name: 'Títulos Financeiros', description: 'Gestão de contas a pagar e receber' },
-    { name: 'Baixas Financeiras', description: 'Liquidação e quitação com garantia transacional ACID' },
+    { name: 'Baixas Financeiras', description: 'Liquidação e quitação financeira' },
     { name: 'Cadastros Base', description: 'Clientes, fornecedores e plano de contas' },
   ],
   paths: {
@@ -56,6 +43,24 @@ export const openApiSpec = {
               },
             },
           },
+        },
+      },
+    },
+    '/reset-demo': {
+      post: {
+        tags: ['Dashboard & BI'],
+        summary: 'Restaurar base de demonstração para o estado inicial',
+        responses: {
+          '200': { description: 'Base restaurada com sucesso' },
+        },
+      },
+    },
+    '/demo/reset': {
+      post: {
+        tags: ['Dashboard & BI'],
+        summary: 'Alias para restaurar base de demonstração para o estado inicial',
+        responses: {
+          '200': { description: 'Base restaurada com sucesso' },
         },
       },
     },
@@ -106,9 +111,9 @@ export const openApiSpec = {
     '/titulos/{id}/baixa': {
       post: {
         tags: ['Baixas Financeiras'],
-        summary: 'Executar liquidação/baixa atômica com isolamento transacional ACID',
+        summary: 'Executar liquidação e baixa de título financeiro',
         description:
-          'Rota crítica que grava o pagamento, calcula juros/descontos com precisão decimal, altera o status do título para PAGO e efetua rollback automático em caso de erro.',
+          'Rota que grava o pagamento, calcula juros/descontos com precisão decimal e altera o status do título para PAGO.',
         parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'integer' } }],
         requestBody: {
           required: true,
@@ -147,7 +152,7 @@ export const openApiSpec = {
       put: { tags: ['Cadastros Base'], summary: 'Atualizar cliente' },
       delete: {
         tags: ['Cadastros Base'],
-        summary: 'Excluir cliente (bloqueado se houver títulos vinculados via ON DELETE RESTRICT)',
+        summary: 'Excluir cliente',
       },
     },
     '/fornecedores': {
@@ -158,7 +163,7 @@ export const openApiSpec = {
       put: { tags: ['Cadastros Base'], summary: 'Atualizar fornecedor' },
       delete: {
         tags: ['Cadastros Base'],
-        summary: 'Excluir fornecedor (bloqueado se houver títulos vinculados via ON DELETE RESTRICT)',
+        summary: 'Excluir fornecedor',
       },
     },
     '/plano-de-contas': {

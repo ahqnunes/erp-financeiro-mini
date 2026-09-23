@@ -1,4 +1,13 @@
 #!/usr/bin/env python3
+"""
+Mini-ERP Financeiro & Business Intelligence
+Módulo de Inteligência - Pipeline ETL (Extract, Transform, Load / Analytics)
+Linguagem: Python 3 com suporte a Pandas e fallback nativo
+
+Este script extrai os dados transacionais do PostgreSQL, processa métricas financeiras
+com precisão decimal e gera os relatórios de Projeção de Fluxo de Caixa e DRE Gerencial.
+"""
+
 import os
 import json
 import datetime

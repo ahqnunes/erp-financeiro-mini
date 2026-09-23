@@ -22,6 +22,7 @@ import { BaixaModal } from './components/BaixaModal.tsx';
 import { NovoLancamentoModal } from './components/NovoLancamentoModal.tsx';
 import { ClienteModal } from './components/ClienteModal.tsx';
 import { FornecedorModal } from './components/FornecedorModal.tsx';
+import { ResetConfirmModal } from './components/ResetConfirmModal.tsx';
 
 import { CheckCircle2, AlertCircle, Loader2 } from 'lucide-react';
 
@@ -49,6 +50,7 @@ export default function App() {
     aberto: false,
     fornecedor: null,
   });
+  const [modalResetAberto, setModalResetAberto] = useState<boolean>(false);
 
   const exibirFeedback = (msg: string, isError = false) => {
     if (isError) {
@@ -128,16 +130,22 @@ export default function App() {
     }
   };
 
-  const handleResetDemo = async () => {
-    if (!confirm('Deseja resetar a base para o estado inicial de demonstração?')) return;
+  const handleExecutarReset = async () => {
     try {
       setLoading(true);
-      const res = await fetch('/api/demo/reset', { method: 'POST' });
-      if (!res.ok) throw new Error('Falha ao resetar demonstração.');
+      let res = await fetch('/api/reset-demo', { method: 'POST' });
+      if (!res.ok) {
+        res = await fetch('/api/demo/reset', { method: 'POST' });
+      }
+      if (!res.ok) {
+        const errJson = await res.json().catch(() => ({}));
+        throw new Error(errJson.error || 'Falha ao restaurar dados de demonstração.');
+      }
       await carregarDados();
       exibirFeedback('Base de demonstração restaurada com sucesso!');
     } catch (err: any) {
-      exibirFeedback(err.message, true);
+      exibirFeedback(err.message || 'Erro ao restaurar base de demonstração.', true);
+      throw err;
     } finally {
       setLoading(false);
     }
@@ -270,7 +278,7 @@ export default function App() {
           currentTab={currentTab}
           saldoCaixaAtual={saldoCaixaAtual}
           onNovoLancamento={() => setModalNovoLancamentoAberto(true)}
-          onResetDemo={handleResetDemo}
+          onResetDemo={() => setModalResetAberto(true)}
         />
 
         <div className="px-6 pt-3">
@@ -374,6 +382,13 @@ export default function App() {
           fornecedor={modalFornecedor.fornecedor}
           onClose={() => setModalFornecedor({ aberto: false, fornecedor: null })}
           onSave={handleSalvarFornecedor}
+        />
+      )}
+
+      {modalResetAberto && (
+        <ResetConfirmModal
+          onClose={() => setModalResetAberto(false)}
+          onConfirm={handleExecutarReset}
         />
       )}
     </div>

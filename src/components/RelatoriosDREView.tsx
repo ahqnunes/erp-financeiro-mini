@@ -87,16 +87,16 @@ export const RelatoriosDREView: React.FC<RelatoriosDREViewProps> = ({ dre }) => 
 
   return (
     <div className="space-y-6">
-      <div className="p-4 bg-white rounded-xl border border-slate-200 shadow-xs flex flex-wrap items-center justify-between gap-3">
+      <div className="p-4 bg-white rounded-2xl border border-stone-200 flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-700 flex items-center justify-center">
             <FileSpreadsheet className="w-5 h-5" />
           </div>
           <div>
-            <h3 className="text-xs font-bold text-slate-800">
+            <h3 className="text-xs font-bold text-stone-800">
               Demonstrativo do Resultado do Exercício (DRE Gerencial)
             </h3>
-            <p className="text-[11px] text-slate-500">
+            <p className="text-[11px] text-stone-500">
               Apuração por competência financeira com análise vertical detalhada
             </p>
           </div>
@@ -107,11 +107,11 @@ export const RelatoriosDREView: React.FC<RelatoriosDREViewProps> = ({ dre }) => 
             id="btn-exportar-dre-pdf"
             onClick={handleExportPDF}
             disabled={gerandoPDF}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-semibold shadow-xs transition disabled:opacity-50"
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-indigo-700 hover:bg-indigo-800 text-white rounded-lg text-xs font-semibold transition disabled:opacity-50"
             title="Exportar documento PDF formatado para impressão ou compartilhamento externo"
           >
             {pdfSucesso ? (
-              <Check className="w-4 h-4 text-emerald-300" />
+              <Check className="w-4 h-4 text-teal-300" />
             ) : (
               <FileDown className="w-4 h-4" />
             )}
@@ -121,7 +121,7 @@ export const RelatoriosDREView: React.FC<RelatoriosDREViewProps> = ({ dre }) => 
           <button
             id="btn-exportar-dre-csv"
             onClick={handleExportCSV}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-semibold transition"
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-stone-100 hover:bg-stone-200 text-stone-700 rounded-lg text-xs font-semibold transition"
           >
             <Download className="w-4 h-4" />
             <span>CSV</span>
@@ -130,45 +130,45 @@ export const RelatoriosDREView: React.FC<RelatoriosDREViewProps> = ({ dre }) => 
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 bg-white rounded-xl border border-slate-200 shadow-xs overflow-hidden">
-          <div className="p-4 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between">
-            <span className="text-xs font-bold text-slate-800">Estrutura Contábil / Gerencial</span>
-            <span className="text-xs text-slate-500 font-mono">Regime de Liquidações Realizadas</span>
+        <div className="lg:col-span-2 bg-white rounded-2xl border border-stone-200 overflow-hidden">
+          <div className="p-4 border-b border-stone-100 bg-stone-50/50 flex items-center justify-between">
+            <span className="text-xs font-bold text-stone-800">Estrutura Contábil / Gerencial</span>
+            <span className="text-xs text-stone-500 font-mono">Regime de Liquidações Realizadas</span>
           </div>
 
-          <div className="divide-y divide-slate-100 text-xs">
-            <div className="p-4 flex items-center justify-between hover:bg-slate-50/50 transition">
+          <div className="divide-y divide-stone-100 text-xs">
+            <div className="p-4 flex items-center justify-between hover:bg-stone-50/50 transition">
               <div>
-                <span className="font-bold text-slate-900 block">1. RECEITA OPERACIONAL BRUTA</span>
-                <span className="text-[11px] text-slate-400">Total faturado de serviços e produtos</span>
+                <span className="font-bold text-stone-900 block">1. RECEITA OPERACIONAL BRUTA</span>
+                <span className="text-[11px] text-stone-400">Total faturado de serviços e produtos</span>
               </div>
-              <span className="font-mono font-bold text-slate-900 text-sm">{formatCurrency(dre.receitaBruta)}</span>
+              <span className="font-mono font-bold text-stone-900 text-sm tabular-nums">{formatCurrency(dre.receitaBruta)}</span>
             </div>
 
-            <div className="p-4 flex items-center justify-between pl-8 hover:bg-slate-50/50 transition">
+            <div className="p-4 flex items-center justify-between pl-8 hover:bg-stone-50/50 transition">
               <div>
-                <span className="text-slate-600 block">(-) Deduções e Descontos Concedidos</span>
-                <span className="text-[11px] text-slate-400">Descontos comerciais aplicados nas baixas</span>
+                <span className="text-stone-600 block">(-) Deduções e Descontos Concedidos</span>
+                <span className="text-[11px] text-stone-400">Descontos comerciais aplicados nas baixas</span>
               </div>
-              <span className="font-mono text-rose-600">
+              <span className="font-mono text-orange-700 tabular-nums">
                 {dre.deducoesDescontos > 0 ? `-${formatCurrency(dre.deducoesDescontos)}` : 'R$ 0,00'}
               </span>
             </div>
 
-            <div className="p-4 bg-blue-50/40 flex items-center justify-between border-y border-blue-100 font-semibold text-blue-950">
+            <div className="p-4 bg-violet-50/50 flex items-center justify-between border-y border-violet-100 font-semibold text-violet-950">
               <div>
                 <span className="block">(=) RECEITA OPERACIONAL LÍQUIDA</span>
-                <span className="text-[10px] text-blue-600">Base 100% para análise vertical</span>
+                <span className="text-[10px] text-violet-600">Base 100% para análise vertical</span>
               </div>
-              <span className="font-mono font-bold text-sm text-blue-900">{formatCurrency(dre.receitaLiquida)}</span>
+              <span className="font-mono font-bold text-sm text-violet-900 tabular-nums">{formatCurrency(dre.receitaLiquida)}</span>
             </div>
 
-            <div className="p-4 flex items-center justify-between hover:bg-slate-50/50 transition">
+            <div className="p-4 flex items-center justify-between hover:bg-stone-50/50 transition">
               <div>
-                <span className="font-bold text-slate-900 block">(-) DESPESAS OPERACIONAIS</span>
-                <span className="text-[11px] text-slate-400">Custos fixos, infraestrutura e fornecedores</span>
+                <span className="font-bold text-stone-900 block">(-) DESPESAS OPERACIONAIS</span>
+                <span className="text-[11px] text-stone-400">Custos fixos, infraestrutura e fornecedores</span>
               </div>
-              <span className="font-mono font-bold text-rose-600 text-sm">
+              <span className="font-mono font-bold text-orange-700 text-sm tabular-nums">
                 -{formatCurrency(dre.despesasOperacionais)}
               </span>
             </div>
@@ -176,37 +176,37 @@ export const RelatoriosDREView: React.FC<RelatoriosDREViewProps> = ({ dre }) => 
             {(dre.categoriasDespesa || []).map((cat: DRECategoria, idx: number) => {
               const perc = ((cat.valor / baseCalculo) * 100).toFixed(1);
               return (
-                <div key={idx} className="py-2.5 px-4 pl-8 flex items-center justify-between hover:bg-slate-50/50 transition text-slate-600">
+                <div key={idx} className="py-2.5 px-4 pl-8 flex items-center justify-between hover:bg-stone-50/50 transition text-stone-600">
                   <div className="flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full bg-slate-300"></span>
+                    <span className="w-1.5 h-1.5 rounded-full bg-orange-300"></span>
                     <span>{cat.categoria}</span>
                   </div>
                   <div className="flex items-center gap-3">
-                    <span className="text-[10px] text-slate-400 font-mono">({perc}%)</span>
-                    <span className="font-mono text-slate-700">-{formatCurrency(cat.valor)}</span>
+                    <span className="text-[10px] text-stone-400 font-mono">({perc}%)</span>
+                    <span className="font-mono text-stone-700 tabular-nums">-{formatCurrency(cat.valor)}</span>
                   </div>
                 </div>
               );
             })}
 
             <div className={`p-4 flex items-center justify-between border-t-2 ${
-              dre.resultadoLiquido >= 0 ? 'bg-emerald-50/60 border-emerald-300' : 'bg-rose-50/60 border-rose-300'
+              dre.resultadoLiquido >= 0 ? 'bg-teal-50/60 border-teal-300' : 'bg-rose-50/60 border-rose-300'
             }`}>
               <div>
-                <span className="font-bold text-slate-900 block text-sm">
+                <span className="font-bold text-stone-900 block text-sm">
                   (=) RESULTADO LÍQUIDO DO EXERCÍCIO
                 </span>
-                <span className="text-[11px] text-slate-500">
+                <span className="text-[11px] text-stone-500">
                   Lucro real apurado após deduções e liquidações
                 </span>
               </div>
               <div className="text-right">
-                <span className={`font-mono font-bold text-base block ${
-                  dre.resultadoLiquido >= 0 ? 'text-emerald-800' : 'text-rose-700'
+                <span className={`font-mono font-bold text-base block tabular-nums ${
+                  dre.resultadoLiquido >= 0 ? 'text-teal-800' : 'text-rose-700'
                 }`}>
                   {formatCurrency(dre.resultadoLiquido)}
                 </span>
-                <span className="text-[11px] font-semibold text-slate-600">
+                <span className="text-[11px] font-semibold text-stone-600">
                   Margem Líquida: {dre.margemLiquidaPercentual}%
                 </span>
               </div>
@@ -214,36 +214,36 @@ export const RelatoriosDREView: React.FC<RelatoriosDREViewProps> = ({ dre }) => 
           </div>
         </div>
 
-        <div className="bg-white rounded-xl border border-slate-200 shadow-xs p-5 flex flex-col justify-between space-y-4">
+        <div className="bg-white rounded-2xl border border-stone-200 p-5 flex flex-col justify-between space-y-4">
           <div>
-            <div className="border-b border-slate-100 pb-3">
-              <h4 className="text-xs font-bold text-slate-900">Composição das Despesas</h4>
-              <p className="text-[11px] text-slate-500">Distribuição por plano de contas gerencial</p>
+            <div className="border-b border-stone-100 pb-3">
+              <h4 className="text-xs font-bold text-stone-900">Composição das Despesas</h4>
+              <p className="text-[11px] text-stone-500">Distribuição por plano de contas gerencial</p>
             </div>
 
             <div className="h-64 w-full mt-3">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={chartDespesasData} layout="vertical" margin={{ top: 5, right: 10, left: 10, bottom: 5 }}>
                   <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#f1f5f9" />
-                  <XAxis type="number" tick={{ fontSize: 9, fill: '#64748b' }} tickFormatter={v => `R$ ${(v / 1000).toFixed(0)}k`} />
-                  <YAxis type="category" dataKey="categoria" width={110} tick={{ fontSize: 9, fill: '#64748b' }} />
+                  <XAxis type="number" tick={{ fontSize: 9, fill: '#78716c' }} tickFormatter={v => `R$ ${(v / 1000).toFixed(0)}k`} />
+                  <YAxis type="category" dataKey="categoria" width={110} tick={{ fontSize: 9, fill: '#78716c' }} />
                   <Tooltip
                     formatter={(val: any) => formatCurrency(Number(val))}
-                    contentStyle={{ backgroundColor: '#ffffff', borderColor: '#e2e8f0', borderRadius: '8px', fontSize: '11px' }}
+                    contentStyle={{ backgroundColor: '#ffffff', borderColor: '#e7e5e4', borderRadius: '8px', fontSize: '11px' }}
                   />
-                  <Bar dataKey="valor" fill="#f43f5e" radius={[0, 4, 4, 0]} />
+                  <Bar dataKey="valor" fill="#c2410c" radius={[0, 4, 4, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
           </div>
 
-          <div className="p-3 bg-slate-50 border border-slate-200 rounded-lg space-y-2">
+          <div className="p-3 bg-stone-50 border border-stone-200 rounded-lg space-y-2">
             <div className="flex items-center gap-2">
-              <Percent className="w-4 h-4 text-blue-600" />
-              <span className="text-xs font-semibold text-slate-800">Eficiência Operacional</span>
+              <Percent className="w-4 h-4 text-indigo-600" />
+              <span className="text-xs font-semibold text-stone-800">Eficiência Operacional</span>
             </div>
-            <p className="text-[11px] text-slate-600">
-              Para cada R$ 100,00 de receita líquida auferida, o negócio retém atualmente <strong>R$ {dre.margemLiquidaPercentual.toFixed(2)}</strong> de lucro líquido final.
+            <p className="text-[11px] text-stone-600">
+              Para cada R$ 100,00 de receita líquida auferida, o negócio retém atualmente <strong className="tabular-nums">R$ {dre.margemLiquidaPercentual.toFixed(2)}</strong> de lucro líquido final.
             </p>
           </div>
         </div>
