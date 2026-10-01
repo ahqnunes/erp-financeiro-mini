@@ -4,19 +4,19 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "tsx server.ts",
-    "build": "vite build && esbuild server.ts --bundle --platform=node --format=cjs --packages=external --sourcemap --outfile=dist/server.cjs",
-    "start": "node dist/server.cjs",
+    "dev": "vite --host 0.0.0.0 --port 3000",
+    "dev:api": "uv run --project backend uvicorn app.main:app --app-dir backend --reload --port 8000",
+    "build": "vite build",
+    "start": "uv run --project backend uvicorn app.main:app --app-dir backend --host 0.0.0.0 --port 3000",
     "preview": "vite preview",
-    "clean": "rm -rf dist server.js",
+    "clean": "node -e \"require('node:fs').rmSync('dist', { recursive: true, force: true })\"",
+    "test": "uv run --project backend pytest",
     "lint": "tsc --noEmit"
   },
   "dependencies": {
     "@google/genai": "^2.4.0",
     "@tailwindcss/vite": "^4.3.3",
     "@vitejs/plugin-react": "^6.1.1",
-    "dotenv": "^17.2.3",
-    "express": "^4.21.2",
     "jspdf": "^4.2.1",
     "jspdf-autotable": "^5.0.8",
     "lucide-react": "^0.546.0",
@@ -28,15 +28,12 @@
     "vite": "^8.3.0"
   },
   "devDependencies": {
-    "@types/express": "^4.17.21",
     "@types/node": "^22.14.0",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "@types/react-is": "^19.3.0",
     "autoprefixer": "^10.4.21",
-    "esbuild": "^0.28.0",
     "tailwindcss": "^4.3.3",
-    "tsx": "^4.21.0",
     "typescript": "^7.0.2"
   }
 }

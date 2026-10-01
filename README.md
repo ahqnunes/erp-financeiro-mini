@@ -68,9 +68,10 @@
 | **Ícones & Animações**| Lucide React + Motion | Feedback visual e transições suaves de abas e modais |
 | **Visualização de Dados**| Recharts 3 + `react-is` | Gráficos de área e linha para projeção do fluxo de caixa |
 | **Exportação PDF** | jsPDF + AutoTable | Geração de PDFs vetoriais com suporte a tabelas e cabeçalhos |
-| **Backend & Servidor**| Express.js + Node.js (TSX) | API RESTful unificada servindo a aplicação na porta 3000 |
-| **Pipeline Analítico**| FinancialETLPipeline | Motor analítico em TypeScript para consolidação de KPIs e DRE |
-| **Documentação API** | OpenAPI 3.0 / Swagger | Documentação disponível no endpoint `/api/docs/openapi.json` |
+| **Backend & API**| FastAPI + SQLAlchemy + Alembic | API RESTful Python com persistência PostgreSQL |
+| **Pipeline Analítico**| Serviço financeiro Python | Consolidação de KPIs, projeção de caixa e DRE |
+| **Frontend & Dev server**| React + Vite | SPA na porta 3000, com proxy `/api` para a porta 8000 |
+| **Documentação API** | OpenAPI 3.0 | Especificação disponível em `/api/docs/openapi.json` |
 
 ---
 
@@ -86,10 +87,10 @@
 ┌──────────────────────────────┐       ┌──────────────────────────────┐
 │       Frontend (SPA)         │       │      Backend & Servidor      │
 │                              │       │                              │
-│ • React 19 + TypeScript      │◄─────►│ • Express.js (Porta 3000)    │
-│ • Tailwind CSS v4            │ HTTP  │ • Vite Middleware (Dev)      │
+│ • React 19 + TypeScript      │◄─────►│ • FastAPI (Porta 8000)       │
+│ • Tailwind CSS v4            │ HTTP  │ • SQLAlchemy + PostgreSQL    │
 │ • Recharts + jsPDF           │ JSON  │ • OpenAPI 3.0 Spec           │
-│ • Modais de Baixa e Filtros  │       │ • Repositório Transacional   │
+│ • Modais de Baixa e Filtros  │       │ • Migrações Alembic          │
 └──────────────────────────────┘       └──────────────┬───────────────┘
                                                       │
                                        ┌──────────────┴───────────────┐
@@ -109,17 +110,20 @@
 
 ```text
 erp-financeiro-mini/
-├── server.ts                    # Ponto de entrada do servidor unificado (Express + Vite)
 ├── index.html                   # HTML base da aplicação SPA
 ├── package.json                 # Manifesto do projeto e dependências
 ├── tsconfig.json                # Configurações do compilador TypeScript
 ├── vite.config.ts               # Configuração do Vite com otimização de dependências
 │
-├── server/                      # Camada de Backend
-│   ├── db.ts                    # Mecanismo de persistência e validação de regras de negócio
-│   ├── etl.ts                   # Pipeline analítico de cálculo do fluxo e DRE
-│   └── openapi.ts               # Especificação OpenAPI 3.0 dos endpoints
+├── backend/                     # API FastAPI ativa
+│   ├── app/                     # Rotas, modelos, schemas e serviços
+│   ├── migrations/              # Migrações Alembic
+│   ├── pyproject.toml           # Dependências Python
+│   └── README.md                # Execução e configuração do backend Python
 │
+├── docs/                        # Contratos e regras funcionais para a migração
+│   ├── API-CONTRACT.md          # Contrato HTTP atual da API
+│   └── DOMAIN-RULES.md          # Regras de negócio e decisões pendentes
 ├── src/                         # Camada de Frontend
 │   ├── main.tsx                 # Ponto de inicialização do React
 │   ├── App.tsx                  # Componente principal e orquestrador de telas
@@ -147,8 +151,10 @@ erp-financeiro-mini/
 ## 💻 Guia de Instalação e Execução Local
 
 ### 1. Pré-requisitos
-- **Node.js**: Versão 20 recomendada (mínimo 18.x)
-- **npm**: Versão 9+ ou **pnpm** / **yarn**
+- **Node.js** 20+ e **npm**
+- **Python** 3.11+
+- **uv** para instalar dependências e executar a API
+- **PostgreSQL** 16 (ou Docker com Docker Compose)
 
 ### 2. Passo a Passo
 
@@ -157,22 +163,41 @@ erp-financeiro-mini/
    cd erp-financeiro-mini
    ```
 
-2. **Instale as dependências:**
-   > **Nota:** Use a flag `--legacy-peer-deps` para garantir compatibilidade com as versões estritas do Vite/Esbuild no ambiente local:
+2. **Instale as dependências do frontend:**
+   > **Nota:** Se houver conflitos entre versões de dependências peer do frontend, use `--legacy-peer-deps`:
    ```bash
    npm install --legacy-peer-deps
    ```
 
-3. **Inicie o servidor de desenvolvimento:**
+3. **Inicie o PostgreSQL e prepare o schema:**
+   ```bash
+   docker compose up -d db
+   uv sync --project backend --group dev
+   uv run --project backend alembic -c backend/alembic.ini upgrade head
+   ```
+   O banco pode ser configurado pela variável `MINIERP_DATABASE_URL`.
+
+4. **Inicie a API e o frontend em terminais separados:**
+   ```bash
+   uv run --project backend uvicorn app.main:app --app-dir backend --reload --port 8000
+   ```
    ```bash
    npm run dev
    ```
 
-4. **Acesse a aplicação:**
+5. **Acesse a aplicação:**
    Abra o navegador no endereço:
    ```text
    http://localhost:3000
    ```
+   O Vite encaminha as chamadas `/api` para `http://localhost:8000`. Em um banco
+   vazio, execute `POST /api/reset-demo` para carregar os dados de demonstração.
+
+Para executar a aplicação completa em container, incluindo PostgreSQL:
+
+```bash
+docker compose up --build
+```
 
 ---
 
@@ -238,11 +263,24 @@ No arquivo `package.json`, estão configurados os seguintes comandos:
 
 | Comando | Finalidade |
 | :--- | :--- |
-| `npm run dev` | Inicia o servidor de desenvolvimento Express + Vite com recarregamento sob demanda |
-| `npm run build` | Compila o bundle estático do frontend com o Vite e empacota o backend com o esbuild em `dist/` |
-| `npm start` | Inicia o servidor Node.js apontando para a pasta compilada `dist/` em modo de produção |
+| `npm run dev` | Inicia o frontend Vite na porta 3000 |
+| `npm run dev:api` | Inicia a API FastAPI na porta 8000 em modo de desenvolvimento |
+| `npm run build` | Compila o frontend estático com o Vite |
+| `npm start` | Inicia a API FastAPI na porta 3000 e serve o frontend compilado em `dist/` |
+| `npm test` | Executa a suíte de testes da API FastAPI |
 | `npm run lint` | Executa a validação estática de tipos do TypeScript sem gerar arquivos (`tsc --noEmit`) |
 | `npm run clean` | Remove as pastas de compilação `dist/` e arquivos temporários |
+
+Os testes e verificações do backend Python são executados com:
+
+```bash
+uv run --project backend pytest
+uv run --project backend ruff check backend/app backend/tests backend/migrations
+```
+
+Os contratos e regras preservados pela API estão em
+[docs/API-CONTRACT.md](docs/API-CONTRACT.md) e
+[docs/DOMAIN-RULES.md](docs/DOMAIN-RULES.md).
 
 ---
 

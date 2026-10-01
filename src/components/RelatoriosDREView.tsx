@@ -18,23 +18,23 @@ import {
   Tooltip,
   CartesianGrid,
 } from 'recharts';
-
+ 
 interface RelatoriosDREViewProps {
   dre: DREGerencial;
 }
-
+ 
 export const RelatoriosDREView: React.FC<RelatoriosDREViewProps> = ({ dre }) => {
   const [gerandoPDF, setGerandoPDF] = useState<boolean>(false);
   const [pdfSucesso, setPdfSucesso] = useState<boolean>(false);
-
+ 
   const baseCalculo = dre.receitaLiquida > 0 ? dre.receitaLiquida : 1;
-
+ 
   const chartDespesasData = (dre.categoriasDespesa || []).map((d: DRECategoria) => ({
     categoria: d.categoria,
     valor: d.valor,
     percentual: ((d.valor / baseCalculo) * 100).toFixed(1),
   }));
-
+ 
   const handleExportPDF = () => {
     try {
       setGerandoPDF(true);
@@ -47,7 +47,7 @@ export const RelatoriosDREView: React.FC<RelatoriosDREViewProps> = ({ dre }) => 
       setGerandoPDF(false);
     }
   };
-
+ 
   const csvEscape = (value: string | number): string => {
     let str = String(value);
     // Neutraliza injeção de fórmulas em planilhas (Excel/Sheets) para valores
@@ -63,7 +63,7 @@ export const RelatoriosDREView: React.FC<RelatoriosDREViewProps> = ({ dre }) => 
     }
     return str;
   };
-
+ 
   const handleExportCSV = () => {
     let csv = 'Item;Valor (R$);% Receita Líquida\n';
     csv += `1. RECEITA BRUTA OPERACIONAL;${dre.receitaBruta.toFixed(2)};-\n`;
@@ -74,7 +74,7 @@ export const RelatoriosDREView: React.FC<RelatoriosDREViewProps> = ({ dre }) => 
       csv += `  - ${csvEscape(d.categoria)};${d.valor.toFixed(2)};${((d.valor / baseCalculo) * 100).toFixed(1)}%\n`;
     });
     csv += `5. (=) RESULTADO LÍQUIDO DO EXERCÍCIO;${dre.resultadoLiquido.toFixed(2)};${dre.margemLiquidaPercentual}%\n`;
-
+ 
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
@@ -84,7 +84,7 @@ export const RelatoriosDREView: React.FC<RelatoriosDREViewProps> = ({ dre }) => 
     link.click();
     document.body.removeChild(link);
   };
-
+ 
   return (
     <div className="space-y-6">
       <div className="p-4 bg-white rounded-2xl border border-stone-200 flex flex-wrap items-center justify-between gap-3">
@@ -101,7 +101,7 @@ export const RelatoriosDREView: React.FC<RelatoriosDREViewProps> = ({ dre }) => 
             </p>
           </div>
         </div>
-
+ 
         <div className="flex items-center gap-2">
           <button
             id="btn-exportar-dre-pdf"
@@ -117,7 +117,7 @@ export const RelatoriosDREView: React.FC<RelatoriosDREViewProps> = ({ dre }) => 
             )}
             <span>{gerandoPDF ? 'Gerando...' : pdfSucesso ? 'PDF Baixado!' : 'Exportar PDF'}</span>
           </button>
-
+ 
           <button
             id="btn-exportar-dre-csv"
             onClick={handleExportCSV}
@@ -128,14 +128,14 @@ export const RelatoriosDREView: React.FC<RelatoriosDREViewProps> = ({ dre }) => 
           </button>
         </div>
       </div>
-
+ 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 bg-white rounded-2xl border border-stone-200 overflow-hidden">
           <div className="p-4 border-b border-stone-100 bg-stone-50/50 flex items-center justify-between">
             <span className="text-xs font-bold text-stone-800">Estrutura Contábil / Gerencial</span>
             <span className="text-xs text-stone-500 font-mono">Regime de Liquidações Realizadas</span>
           </div>
-
+ 
           <div className="divide-y divide-stone-100 text-xs">
             <div className="p-4 flex items-center justify-between hover:bg-stone-50/50 transition">
               <div>
@@ -144,7 +144,7 @@ export const RelatoriosDREView: React.FC<RelatoriosDREViewProps> = ({ dre }) => 
               </div>
               <span className="font-mono font-bold text-stone-900 text-sm tabular-nums">{formatCurrency(dre.receitaBruta)}</span>
             </div>
-
+ 
             <div className="p-4 flex items-center justify-between pl-8 hover:bg-stone-50/50 transition">
               <div>
                 <span className="text-stone-600 block">(-) Deduções e Descontos Concedidos</span>
@@ -154,7 +154,7 @@ export const RelatoriosDREView: React.FC<RelatoriosDREViewProps> = ({ dre }) => 
                 {dre.deducoesDescontos > 0 ? `-${formatCurrency(dre.deducoesDescontos)}` : 'R$ 0,00'}
               </span>
             </div>
-
+ 
             <div className="p-4 bg-violet-50/50 flex items-center justify-between border-y border-violet-100 font-semibold text-violet-950">
               <div>
                 <span className="block">(=) RECEITA OPERACIONAL LÍQUIDA</span>
@@ -162,7 +162,7 @@ export const RelatoriosDREView: React.FC<RelatoriosDREViewProps> = ({ dre }) => 
               </div>
               <span className="font-mono font-bold text-sm text-violet-900 tabular-nums">{formatCurrency(dre.receitaLiquida)}</span>
             </div>
-
+ 
             <div className="p-4 flex items-center justify-between hover:bg-stone-50/50 transition">
               <div>
                 <span className="font-bold text-stone-900 block">(-) DESPESAS OPERACIONAIS</span>
@@ -172,7 +172,7 @@ export const RelatoriosDREView: React.FC<RelatoriosDREViewProps> = ({ dre }) => 
                 -{formatCurrency(dre.despesasOperacionais)}
               </span>
             </div>
-
+ 
             {(dre.categoriasDespesa || []).map((cat: DRECategoria, idx: number) => {
               const perc = ((cat.valor / baseCalculo) * 100).toFixed(1);
               return (
@@ -188,7 +188,7 @@ export const RelatoriosDREView: React.FC<RelatoriosDREViewProps> = ({ dre }) => 
                 </div>
               );
             })}
-
+ 
             <div className={`p-4 flex items-center justify-between border-t-2 ${
               dre.resultadoLiquido >= 0 ? 'bg-teal-50/60 border-teal-300' : 'bg-rose-50/60 border-rose-300'
             }`}>
@@ -213,14 +213,14 @@ export const RelatoriosDREView: React.FC<RelatoriosDREViewProps> = ({ dre }) => 
             </div>
           </div>
         </div>
-
+ 
         <div className="bg-white rounded-2xl border border-stone-200 p-5 flex flex-col justify-between space-y-4">
           <div>
             <div className="border-b border-stone-100 pb-3">
               <h4 className="text-xs font-bold text-stone-900">Composição das Despesas</h4>
               <p className="text-[11px] text-stone-500">Distribuição por plano de contas gerencial</p>
             </div>
-
+ 
             <div className="h-64 w-full mt-3">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={chartDespesasData} layout="vertical" margin={{ top: 5, right: 10, left: 10, bottom: 5 }}>
@@ -236,7 +236,7 @@ export const RelatoriosDREView: React.FC<RelatoriosDREViewProps> = ({ dre }) => 
               </ResponsiveContainer>
             </div>
           </div>
-
+ 
           <div className="p-3 bg-stone-50 border border-stone-200 rounded-lg space-y-2">
             <div className="flex items-center gap-2">
               <Percent className="w-4 h-4 text-indigo-600" />
@@ -251,3 +251,51 @@ export const RelatoriosDREView: React.FC<RelatoriosDREViewProps> = ({ dre }) => 
     </div>
   );
 };
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
